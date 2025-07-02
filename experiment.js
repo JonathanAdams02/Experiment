@@ -47,9 +47,52 @@ const SOURCE_IMAGES = [
 
 const MODELS = ['GROK', 'GEMINI', 'GPT'];
 const ITERATIONS = {
-    'GROK': [1, 2, 3, 4, 5, 6], // Try all 6 iterations for GROK
     'GEMINI': [1, 2, 3, 4, 5],
     'GPT': [1, 2, 3, 4, 5]
+};
+
+// Hardcoded GROK file availability (based on your console output)
+const GROK_AVAILABILITY = {
+    '131_0_1_0': [1, 2, 3, 5, 6],
+    '131_1_1_0': [1, 2, 3, 4, 6],
+    '132_0_1_1': [1, 2, 3, 5, 6],
+    '132_1_1_1': [1, 2, 3, 4, 5],
+    '133_0_1_1': [1, 2, 4, 5, 6],
+    '133_1_1_1': [1, 2, 3, 4, 5],
+    '134_0_1_0': [2, 3, 4, 5, 6],
+    '134_1_1_0': [1, 2, 3, 5, 6],
+    '135_0_0_0': [1, 2, 4, 5, 6],
+    '135_1_0_0': [1, 2, 4, 5, 6],
+    '136_0_0_1': [1, 2, 4, 5, 6],
+    '136_1_0_1': [1, 2, 3, 5, 6],
+    '137_0_0_0': [2, 3, 4, 5, 6],
+    '137_1_0_0': [1, 2, 3, 4, 5],
+    '138_0_0_1': [1, 3, 4, 5, 6],
+    '138_1_0_1': [2, 3, 4, 5, 6],
+    '139_0_1_1': [1, 2, 3, 4, 5],
+    '139_1_1_1': [1, 2, 4, 5, 6],
+    '140_0_1_0': [1, 2, 3, 4, 6],
+    '140_1_1_0': [1, 2, 3, 4, 5],
+    '141_0_1_1': [1, 2, 3, 4, 5],
+    '141_1_1_1': [1, 2, 3, 5, 6],
+    '142_0_0_1': [1, 2, 3, 5, 6],
+    '142_1_0_1': [1, 3, 4, 5, 6],
+    '143_0_0_1': [2, 3, 4, 5, 6],
+    '143_1_0_1': [1, 3, 4, 5, 6],
+    '144_0_1_1': [1, 2, 3, 4, 6],
+    '144_1_1_1': [1, 2, 3, 4, 6],
+    '145_0_0_1': [1, 3, 4, 5, 6],
+    '145_1_0_1': [1, 3, 4, 5, 6],
+    '146_0_0_0': [2, 3, 4, 5, 6],
+    '146_1_0_0': [2, 3, 4, 5, 6],
+    '147_0_1_0': [1, 2, 3, 4, 5],
+    '147_1_1_0': [1, 2, 4, 5, 6],
+    '148_0_1_0': [1, 3, 4, 5, 6],
+    '148_1_1_0': [1, 3, 4, 5, 6],
+    '149_0_0_0': [1, 3, 4, 5, 6],
+    '149_1_0_0': [1, 3, 4, 5, 6],
+    '150_0_0_0': [1, 2, 3, 5, 6],
+    '150_1_0_0': [1, 2, 4, 5, 6]
 };
 
 // Instructions content as a reusable variable
@@ -231,43 +274,26 @@ function generateModelFilename(sourceImage, model, iteration) {
     }
 }
 
-// Function to check if an image exists
-function imageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-    });
-}
-
-// Generate all trials with existence checking
-async function generateTrials() {
+// Generate all trials using hardcoded GROK availability
+function generateTrials() {
     const trials = [];
     const sourceImages = generateSourceImages();
     
-    console.log('Checking which model images exist...');
+    console.log('Generating trials...');
     
     for (const sourceImage of sourceImages) {
+        const baseKey = `${sourceImage.stimId}_${sourceImage.naturalNovel}_${sourceImage.symmetry}_${sourceImage.length}`;
+        
         for (const model of MODELS) {
-            const modelIterations = ITERATIONS[model];
-            let validIterations = [];
+            let iterationsToUse;
             
-            // Check which iterations exist for this model and source image
-            for (const iteration of modelIterations) {
-                const modelFilename = generateModelFilename(sourceImage, model, iteration);
-                const modelPath = `Images/${model}/${modelFilename}`;
-                
-                const exists = await imageExists(modelPath);
-                if (exists) {
-                    validIterations.push(iteration);
-                }
+            if (model === 'GROK') {
+                // Use the hardcoded GROK variations
+                iterationsToUse = GROK_AVAILABILITY[baseKey] || [];
+            } else {
+                // For GEMINI and GPT, use all 5 iterations
+                iterationsToUse = ITERATIONS[model];
             }
-            
-            console.log(`${model} for ${sourceImage.stimId}_${sourceImage.naturalNovel}_${sourceImage.symmetry}_${sourceImage.length}: found ${validIterations.length} iterations (${validIterations.join(', ')})`);
-            
-            // Only use the first 5 valid iterations for consistency
-            const iterationsToUse = validIterations.slice(0, 5);
             
             for (const iteration of iterationsToUse) {
                 const modelFilename = generateModelFilename(sourceImage, model, iteration);
@@ -303,6 +329,9 @@ function shuffleArray(array) {
 
 // Global variable to store subject ID
 let subjectID = '';
+
+// Global variable to store current rating
+let currentRating = 50;
 
 // Initialize jsPsych
 const jsPsych = initJsPsych({
@@ -428,7 +457,9 @@ const examples = {
                     <img src="Images/Examples/Good_example.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
                          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI4YTc0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzI4YTc0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R29vZCBFeGFtcGxlPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPihJbWFnZSBub3QgZm91bmQpPC90ZXh0Pjwvc3ZnPic;">
                     <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
-                        <li>Follows instructions precisely</li> 
+                        <li>Follows instructions precisely</li>
+                        <li>Completes the shape naturally</li>
+                        <li>Maintains visual consistency</li>
                         <li>Only fills the occluded region</li>
                     </ul>
                 </div>
@@ -440,10 +471,11 @@ const examples = {
                          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2RjMzU0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2RjMzU0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFkIEV4YW1wbGU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+KEltYWdlIG5vdCBmb3VuZCk8L3RleHQ+PC9zdmc+Jw==">
                     <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
                         <li>Ignores instructions</li>
-                        <li>Changes pixels outside occluder</li>
-                       
+                        <li>Unnatural completion</li>
+                        <li>Changes visible parts</li>
+                        <li>Poor visual quality</li>
                     </ul>
-                </div> 
+                </div>
             </div>
             
             <div style="background: #e9ecef; padding: 20px; border-radius: 10px; margin: 30px 0;">
@@ -455,9 +487,6 @@ const examples = {
     `,
     choices: "ALL_KEYS"
 };
-
-// Global variable to store current rating
-let currentRating = 50;
 
 // Create trial template
 function createTrial(trialData) {
@@ -524,12 +553,9 @@ function createTrial(trialData) {
 }
 
 // Initialize and run the experiment
-async function runExperiment() {
-    // Show loading message
-    document.body.innerHTML = '<div style="text-align: center; padding: 50px;"><h2>Loading experiment...</h2><p>Checking which images exist. This may take a moment.</p></div>';
-    
+function runExperiment() {
     // Generate and shuffle all trials
-    const allTrials = await generateTrials();
+    const allTrials = generateTrials();
     const shuffledTrials = shuffleArray(allTrials);
 
     // Add trial numbers
@@ -598,4 +624,4 @@ async function runExperiment() {
 }
 
 // Start the experiment
-runExperiment();
+runExperiment(); 
