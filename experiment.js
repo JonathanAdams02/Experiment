@@ -254,7 +254,7 @@ function generateSourceImages() {
         symmetry: img.symmetry,
         length: img.length,
         filename: `${img.stimId}_${img.naturalNovel}_${img.symmetry}_${img.length}_2_overlaid.png`,
-        path: `Images/Source_Images/${img.stimId}_${img.naturalNovel}_${img.symmetry}_${img.length}_2_overlaid.png`
+        path: `Images/Source_images/${img.stimId}_${img.naturalNovel}_${img.symmetry}_${img.length}_2_overlaid.png`
     }));
 }
 
