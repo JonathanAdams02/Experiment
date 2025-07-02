@@ -469,7 +469,7 @@ const examples = {
                          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2RjMzU0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2RjMzU0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFkIEV4YW1wbGU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+KEltYWdlIG5vdCBmb3VuZCk8L3RleHQ+PC9zdmc+Jw==">
                     <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
                         <li>Ignores instructions</li>
-                        <li>Changes pixels outside occlder (face)</li>
+                        <li>Changes pixels outside occluder (face)</li>
                     </ul>
                 </div>
             </div>
