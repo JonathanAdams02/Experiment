@@ -126,6 +126,42 @@ const INSTRUCTIONS_CONTENT = `
     </div>
 `;
 
+// Examples content as a reusable variable
+const EXAMPLES_CONTENT = `
+    <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
+        <h2>Examples</h2>
+        <p>Here are examples to help you understand what good and poor performance look like:</p>
+        
+        <div style="display: flex; justify-content: center; gap: 50px; margin: 40px 0;">
+            <div style="text-align: center; padding: 20px; border: 3px solid #28a745; border-radius: 10px; background: #f8fff8;">
+                <h3 style="color: #28a745; margin-top: 0;">✓ Good Example (High Rating)</h3>
+                <p><strong>What good performance looks like:</strong></p>
+                <img src="Images/Examples/Good_example.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI4YTc0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzI4YTc0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R29vZCBFeGFtcGxlPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPihJbWFnZSBub3QgZm91bmQpPC90ZXh0Pjwvc3ZnPic;">
+                <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
+                    <li>Follows instructions precisely</li>
+                    <li>Only fills the occluded region</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; padding: 20px; border: 3px solid #dc3545; border-radius: 10px; background: #fff8f8;">
+                <h3 style="color: #dc3545; margin-top: 0;">✗ Bad Example (Low Rating)</h3>
+                <p><strong>What poor performance looks like:</strong></p>
+                <img src="Images/Examples/Bad_example.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2RjMzU0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2RjMzU0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFkIEV4YW1wbGU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+KEltYWdlIG5vdCBmb3VuZCk8L3RleHQ+PC9zdmc+Jw==">
+                <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
+                    <li>Ignores instructions</li>
+                    <li>Changes pixels outside occluder (face)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="background: #e9ecef; padding: 20px; border-radius: 10px; margin: 30px 0;">
+            <p style="font-size: 16px; margin: 0;"><strong>Remember:</strong> Rate based on how well the AI followed the specific instructions, not whether you personally like the completion.</p>
+        </div>
+    </div>
+`;
+
 // Function to add persistent instructions button
 function addInstructionsButton() {
     // Remove existing button if it exists
@@ -163,6 +199,47 @@ function addInstructionsButton() {
     
     // Add click handler to show instructions modal
     button.addEventListener('click', showInstructionsModal);
+    
+    document.body.appendChild(button);
+}
+
+// Function to add persistent examples button
+function addExamplesButton() {
+    // Remove existing button if it exists
+    const existingButton = document.getElementById('persistent-examples-btn');
+    if (existingButton) {
+        existingButton.remove();
+    }
+    
+    // Create button
+    const button = document.createElement('button');
+    button.id = 'persistent-examples-btn';
+    button.innerHTML = '🖼️ Examples';
+    button.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 150px;
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    `;
+    
+    // Add hover effect
+    button.addEventListener('mouseenter', () => {
+        button.style.background = '#218838';
+    });
+    button.addEventListener('mouseleave', () => {
+        button.style.background = '#28a745';
+    });
+    
+    // Add click handler to show examples modal
+    button.addEventListener('click', showExamplesModal);
     
     document.body.appendChild(button);
 }
@@ -217,6 +294,85 @@ function showInstructionsModal() {
     
     // Add instructions content
     modalContent.innerHTML = INSTRUCTIONS_CONTENT;
+    modalContent.appendChild(closeButton);
+    
+    // Add close instruction
+    const closeInstruction = document.createElement('p');
+    closeInstruction.innerHTML = '<strong>Click the X or click outside this window to close</strong>';
+    closeInstruction.style.cssText = 'text-align: center; margin-top: 20px; color: #666;';
+    modalContent.appendChild(closeInstruction);
+    
+    modal.appendChild(modalContent);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Close modal with Escape key
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    document.body.appendChild(modal);
+}
+
+// Function to show examples modal
+function showExamplesModal() {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.id = 'examples-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    `;
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 90%;
+        max-height: 90%;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    `;
+    
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '✕';
+    closeButton.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #666;
+    `;
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Add examples content
+    modalContent.innerHTML = EXAMPLES_CONTENT;
     modalContent.appendChild(closeButton);
     
     // Add close instruction
@@ -337,10 +493,14 @@ let currentRating = 50;
 const jsPsych = initJsPsych({
     show_progress_bar: true,
     on_finish: function() {
-        // Remove instructions button
-        const button = document.getElementById('persistent-instructions-btn');
-        if (button) {
-            button.remove();
+        // Remove both persistent buttons
+        const instructionsButton = document.getElementById('persistent-instructions-btn');
+        const examplesButton = document.getElementById('persistent-examples-btn');
+        if (instructionsButton) {
+            instructionsButton.remove();
+        }
+        if (examplesButton) {
+            examplesButton.remove();
         }
         
         // Get only the rating trial data we want
@@ -445,43 +605,15 @@ const instructions = {
 // Examples screen
 const examples = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `
-        <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
-            <h2>Examples</h2>
-            <p>Here are examples to help you understand what good and poor performance look like:</p>
-            
-            <div style="display: flex; justify-content: center; gap: 50px; margin: 40px 0;">
-                <div style="text-align: center; padding: 20px; border: 3px solid #28a745; border-radius: 10px; background: #f8fff8;">
-                    <h3 style="color: #28a745; margin-top: 0;">✓ Good Example (High Rating)</h3>
-                    <p><strong>What good performance looks like:</strong></p>
-                    <img src="Images/Examples/Good_example.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
-                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI4YTc0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzI4YTc0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R29vZCBFeGFtcGxlPC90ZXh0Pjx0ZXh0IHg9IjE1MCIgeT0iMTYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPihJbWFnZSBub3QgZm91bmQpPC90ZXh0Pjwvc3ZnPic;">
-                    <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
-                        <li>Follows instructions precisely</li>
-                        <li>Only fills the occluded region</li>
-                    </ul>
-                </div>
-                
-                <div style="text-align: center; padding: 20px; border: 3px solid #dc3545; border-radius: 10px; background: #fff8f8;">
-                    <h3 style="color: #dc3545; margin-top: 0;">✗ Bad Example (Low Rating)</h3>
-                    <p><strong>What poor performance looks like:</strong></p>
-                    <img src="Images/Examples/Bad_example.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
-                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2RjMzU0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2RjMzU0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFkIEV4YW1wbGU8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+KEltYWdlIG5vdCBmb3VuZCk8L3RleHQ+PC9zdmc+Jw==">
-                    <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
-                        <li>Ignores instructions</li>
-                        <li>Changes pixels outside occluder (face)</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div style="background: #e9ecef; padding: 20px; border-radius: 10px; margin: 30px 0;">
-                <p style="font-size: 16px; margin: 0;"><strong>Remember:</strong> Rate based on how well the AI followed the specific instructions, not whether you personally like the completion.</p>
-            </div>
-            
-            <p><strong>Press any key to start the experiment</strong></p>
-        </div>
+    stimulus: EXAMPLES_CONTENT + `
+        <p><strong>Note: You can access the instructions and the examples throughout the experiment by pressing the buttons in the top-right corner of the screen.</strong></p>
+        <p>Press any key to start the experiment</p>
     `,
-    choices: "ALL_KEYS"
+    choices: "ALL_KEYS",
+    on_start: function() {
+        // Add the persistent examples button when examples are shown
+        addExamplesButton();
+    }
 };
 
 // Create trial template
@@ -491,8 +623,9 @@ function createTrial(trialData) {
     return {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
-            // Reset current rating for new trial
-            currentRating = 50;
+            // Generate random starting position for slider (1-100)
+            const randomStart = Math.floor(Math.random() * 100) + 1;
+            currentRating = randomStart;
             
             return `
                 <div style="text-align: center;">
@@ -512,7 +645,7 @@ function createTrial(trialData) {
                         <p style="font-size: 18px; margin-bottom: 20px;">How well did the AI model follow the task?</p>
                         <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
                             <span>1<br><small>Very Poor</small></span>
-                            <input type="range" id="rating-slider-${uniqueId}" min="1" max="100" value="50" 
+                            <input type="range" id="rating-slider-${uniqueId}" min="1" max="100" value="${randomStart}" 
                                    style="width: 400px; height: 20px;" 
                                    oninput="
                                        document.getElementById('slider-value-${uniqueId}').textContent = this.value;
@@ -520,7 +653,7 @@ function createTrial(trialData) {
                                    ">
                             <span>100<br><small>Perfect</small></span>
                         </div>
-                        <div id="slider-value-${uniqueId}" style="font-size: 20px; font-weight: bold; margin: 15px 0;">50</div>
+                        <div id="slider-value-${uniqueId}" style="font-size: 20px; font-weight: bold; margin: 15px 0;">${randomStart}</div>
                     </div>
                     <p style="font-size: 16px; color: #666;">
                         Adjust the slider to your rating, then <strong>press SPACEBAR</strong> to continue.
@@ -561,6 +694,26 @@ function runExperiment() {
 
     // Create jsPsych trials
     const experimentTrials = shuffledTrials.map(trial => createTrial(trial));
+
+    // Collect all image paths for preloading
+    const allImagePaths = [];
+    shuffledTrials.forEach(trial => {
+        allImagePaths.push(trial.sourceImage);
+        allImagePaths.push(trial.modelImage);
+    });
+    
+    // Add example images if they exist
+    allImagePaths.push('Images/Examples/Good_example.png');
+    allImagePaths.push('Images/Examples/Bad_example.png');
+
+    // Preload all images
+    const preload = {
+        type: jsPsychPreload,
+        images: allImagePaths,
+        message: 'Loading images... This may take a moment.',
+        show_progress_bar: true,
+        continue_after_error: true
+    };
 
     // Add break screens every 100 trials
     const trialsWithBreaks = [];
@@ -611,6 +764,7 @@ function runExperiment() {
         subjectIDCollection,
         instructions,
         examples,
+        preload,
         ...trialsWithBreaks,
         debrief
     ];
@@ -620,4 +774,4 @@ function runExperiment() {
 }
 
 // Start the experiment
-runExperiment(); 
+runExperiment();
