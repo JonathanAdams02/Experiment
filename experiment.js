@@ -751,6 +751,7 @@ function runExperiment() {
                     <p>Thank you for participating in this experiment.</p>
                     <p>You have completed all ${experimentTrials.length} trials.</p>
                     <p>Your data has been recorded.</p>
+                    <p>Please e-mail your data back to the experimenter.</p>
                     <p><strong>Press any key to finish</strong></p>
                 </div>
             `;
