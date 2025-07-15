@@ -126,10 +126,10 @@ const INSTRUCTIONS_CONTENT = `
     </div>
 `;
 
-// Examples content as a reusable variable
-const EXAMPLES_CONTENT = `
+// Examples content as reusable variables for each page
+const EXAMPLES_PAGE_1_CONTENT = `
     <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
-        <h2>Examples</h2>
+        <h2>Examples - Page 1 of 2</h2>
         <p>Here are examples to help you understand what good and poor performance look like:</p>
         
         <div style="display: flex; justify-content: center; gap: 50px; margin: 40px 0;">
@@ -153,6 +153,41 @@ const EXAMPLES_CONTENT = `
                     <li>Ignores instructions</li>
                     <li>Changes pixels outside occluder (face)</li>
                 </ul>
+            </div>
+        </div>
+        
+        <div style="background: #e9ecef; padding: 20px; border-radius: 10px; margin: 30px 0;">
+            <p style="font-size: 16px; margin: 0;"><strong>Remember:</strong> Rate based on how well the AI followed the specific instructions, not whether you personally like the completion.</p>
+        </div>
+    </div>
+`;
+
+const EXAMPLES_PAGE_2_CONTENT = `
+    <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
+        <h2>Examples - Page 2 of 2</h2>
+        <p>Here are additional examples to further illustrate good and poor performance:</p>
+        
+        <div style="display: flex; justify-content: center; gap: 50px; margin: 40px 0;">
+            <div style="text-align: center; padding: 20px; border: 3px solid #28a745; border-radius: 10px; background: #f8fff8;">
+                <h3 style="color: #28a745; margin-top: 0;">✓ Good Example 2 (High Rating)</h3>
+                <p><strong>Another example of good performance:</strong></p>
+                <img src="Images/Examples/Good_example_2.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzI4YTc0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzI4YTc0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R29vZCBFeGFtcGxlIDI8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+KEltYWdlIG5vdCBmb3VuZCk8L3RleHQ+PC9zdmc+Jw==">
+                <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
+                    <li>Respects original shape boundaries</li>
+                    <li>Natural completion of the form</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; padding: 20px; border: 3px solid #dc3545; border-radius: 10px; background: #fff8f8;">
+                <h3 style="color: #dc3545; margin-top: 0;">✗ Moderate Example (Medium Rating)</h3>
+                <p><strong>Example of moderate performance:</strong></p>
+                <img src="Images/Examples/Bad_example_2.png" style="max-width: 300px; max-height: 300px; border: 2px solid #333; margin: 10px 0;"
+                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2RjMzU0NSIgb3BhY2l0eT0iMC4xIi8+PHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2RjMzU0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFkIEV4YW1wbGUgMjwvdGV4dD48dGV4dCB4PSIxNTAiIHk9IjE2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4oSW1hZ2Ugbm90IGZvdW5kKTwvdGV4dD48L3N2Zz4nIj4=">
+                <ul style="text-align: left; font-size: 14px; margin-top: 15px;">
+                    <li>Follows task constraints</li>
+                    <li>Keeps some of the occluder</li>
+                </ul> 
             </div>
         </div>
         
@@ -323,8 +358,10 @@ function showInstructionsModal() {
     document.body.appendChild(modal);
 }
 
-// Function to show examples modal
+// Function to show examples modal with navigation
 function showExamplesModal() {
+    let currentPage = 1; // Track which page we're on
+    
     // Create modal overlay
     const modal = document.createElement('div');
     modal.id = 'examples-modal';
@@ -354,6 +391,23 @@ function showExamplesModal() {
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     `;
     
+    // Function to update the content based on current page
+    function updateModalContent() {
+        const contentDiv = modalContent.querySelector('#modal-main-content');
+        if (currentPage === 1) {
+            contentDiv.innerHTML = EXAMPLES_PAGE_1_CONTENT;
+        } else {
+            contentDiv.innerHTML = EXAMPLES_PAGE_2_CONTENT;
+        }
+        
+        // Update navigation buttons
+        const prevButton = modalContent.querySelector('#prev-page-btn');
+        const nextButton = modalContent.querySelector('#next-page-btn');
+        
+        prevButton.style.display = currentPage === 1 ? 'none' : 'inline-block';
+        nextButton.style.display = currentPage === 2 ? 'none' : 'inline-block';
+    }
+    
     // Add close button
     const closeButton = document.createElement('button');
     closeButton.innerHTML = '✕';
@@ -366,18 +420,99 @@ function showExamplesModal() {
         font-size: 20px;
         cursor: pointer;
         color: #666;
+        z-index: 10;
     `;
     closeButton.addEventListener('click', () => {
         document.body.removeChild(modal);
     });
     
-    // Add examples content
-    modalContent.innerHTML = EXAMPLES_CONTENT;
+    // Create navigation container
+    const navContainer = document.createElement('div');
+    navContainer.style.cssText = `
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+    `;
+    
+    // Create previous button
+    const prevButton = document.createElement('button');
+    prevButton.id = 'prev-page-btn';
+    prevButton.innerHTML = '← Previous';
+    prevButton.style.cssText = `
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        display: none;
+    `;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateModalContent();
+        }
+    });
+    
+    // Create next button
+    const nextButton = document.createElement('button');
+    nextButton.id = 'next-page-btn';
+    nextButton.innerHTML = 'Next →';
+    nextButton.style.cssText = `
+        background: #007acc;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    `;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < 2) {
+            currentPage++;
+            updateModalContent();
+        }
+    });
+    
+    // Add hover effects for navigation buttons
+    prevButton.addEventListener('mouseenter', () => {
+        prevButton.style.background = '#5a6268';
+    });
+    prevButton.addEventListener('mouseleave', () => {
+        prevButton.style.background = '#6c757d';
+    });
+    
+    nextButton.addEventListener('mouseenter', () => {
+        nextButton.style.background = '#005fa3';
+    });
+    nextButton.addEventListener('mouseleave', () => {
+        nextButton.style.background = '#007acc';
+    });
+    
+    // Add navigation buttons to container
+    navContainer.appendChild(prevButton);
+    navContainer.appendChild(nextButton);
+    
+    // Create main content div
+    const mainContentDiv = document.createElement('div');
+    mainContentDiv.id = 'modal-main-content';
+    
+    // Add all elements to modal content
     modalContent.appendChild(closeButton);
+    modalContent.appendChild(navContainer);
+    modalContent.appendChild(mainContentDiv);
+    
+    // Initialize with first page
+    updateModalContent();
     
     // Add close instruction
     const closeInstruction = document.createElement('p');
-    closeInstruction.innerHTML = '<strong>Click the X or click outside this window to close</strong>';
+    closeInstruction.innerHTML = '<strong>Use the arrow buttons to navigate between pages. Click the X or click outside this window to close.</strong>';
     closeInstruction.style.cssText = 'text-align: center; margin-top: 20px; color: #666;';
     modalContent.appendChild(closeInstruction);
     
@@ -398,6 +533,34 @@ function showExamplesModal() {
         }
     };
     document.addEventListener('keydown', escapeHandler);
+    
+    // Add arrow key navigation
+    const arrowHandler = (e) => {
+        if (e.key === 'ArrowLeft' && currentPage > 1) {
+            currentPage--;
+            updateModalContent();
+        } else if (e.key === 'ArrowRight' && currentPage < 2) {
+            currentPage++;
+            updateModalContent();
+        }
+    };
+    document.addEventListener('keydown', arrowHandler);
+    
+    // Remove arrow handler when modal closes
+    const originalRemoveChild = document.body.removeChild;
+    const cleanupHandler = () => {
+        document.removeEventListener('keydown', arrowHandler);
+        document.removeEventListener('keydown', escapeHandler);
+    };
+    
+    // Override removeChild temporarily to cleanup event listeners
+    document.body.removeChild = function(child) {
+        if (child === modal) {
+            cleanupHandler();
+            document.body.removeChild = originalRemoveChild;
+        }
+        return originalRemoveChild.call(this, child);
+    };
     
     document.body.appendChild(modal);
 }
@@ -602,18 +765,27 @@ const instructions = {
     }
 };
 
-// Examples screen
-const examples = {
+// Examples screen - Page 1
+const examples1 = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: EXAMPLES_CONTENT + `
-        <p><strong>Note: You can access the instructions and the examples throughout the experiment by pressing the buttons in the top-right corner of the screen.</strong></p>
-        <p>Press any key to start the experiment</p>
+    stimulus: EXAMPLES_PAGE_1_CONTENT + `
+        <p><strong>Press any key to see more examples</strong></p>
     `,
     choices: "ALL_KEYS",
     on_start: function() {
         // Add the persistent examples button when examples are shown
         addExamplesButton();
     }
+};
+
+// Examples screen - Page 2
+const examples2 = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: EXAMPLES_PAGE_2_CONTENT + `
+        <p><strong>Note: You can access the instructions and all examples throughout the experiment by pressing the buttons in the top-right corner of the screen.</strong></p>
+        <p><strong>Press any key to start the experiment</strong></p>
+    `,
+    choices: "ALL_KEYS"
 };
 
 // Create trial template
@@ -702,9 +874,11 @@ function runExperiment() {
         allImagePaths.push(trial.modelImage);
     });
     
-    // Add example images if they exist
+    // Add example images (both sets)
     allImagePaths.push('Images/Examples/Good_example.png');
     allImagePaths.push('Images/Examples/Bad_example.png');
+    allImagePaths.push('Images/Examples/Good_example_2.png');
+    allImagePaths.push('Images/Examples/Bad_example_2.png');
 
     // Preload all images
     const preload = {
@@ -764,7 +938,8 @@ function runExperiment() {
         welcome,
         subjectIDCollection,
         instructions,
-        examples,
+        examples1,
+        examples2,
         preload,
         ...trialsWithBreaks,
         debrief
