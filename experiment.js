@@ -938,9 +938,10 @@ function runExperiment() {
         welcome,
         subjectIDCollection,
         instructions,
+        preload,  
         examples1,
         examples2,
-        preload,
+
         ...trialsWithBreaks,
         debrief
     ];
