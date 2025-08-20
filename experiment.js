@@ -197,6 +197,11 @@ const EXAMPLES_PAGE_2_CONTENT = `
     </div>
 `;
 
+// Function to generate random 4-digit subject ID
+function generateSubjectID() {
+    return Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+}
+
 // Function to add persistent instructions button
 function addInstructionsButton() {
     // Remove existing button if it exists
@@ -702,53 +707,61 @@ const jsPsych = initJsPsych({
         // Also display completion message
         document.body.innerHTML = `
             <div style="text-align: center; padding: 50px; max-width: 600px; margin: 0 auto;">
-                <h2>Data Saved Successfully!</h2>
+                <h2>Experiment Complete!</h2>
                 <p>Your data has been saved as: <strong>${subjectID}_experiment_data.txt</strong></p>
+                
+                <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin: 20px 0; border-radius: 10px;">
+                    <h3 style="color: #0c5460; margin-top: 0;">📧 Next Step: Email Your Data</h3>
+                    <p style="font-size: 16px; margin-bottom: 15px;">To receive your participation credits, please email the downloaded file to:</p>
+                    <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Shapecompletion@gmail.com</p>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                        <p style="margin: 0; font-size: 16px;"><strong>Include in your email:</strong></p>
+                        <ul style="text-align: left; display: inline-block; margin: 10px 0;">
+                            <li>Your full name</li>
+                            <li>Your student ID number</li>
+                            <li>The data file: <strong>${subjectID}_experiment_data.txt</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
                 <p>Thank you for participating in this experiment!</p>
             </div>
         `;
     }
 });
 
-// Subject ID collection
-const subjectIDCollection = {
-    type: jsPsychSurveyText,
-    questions: [
-        {
-            prompt: 'Please enter your Subject ID:',
-            name: 'subjectID',
-            required: true,
-            columns: 20
-        }
-    ],
-    button_label: 'Start Experiment',
-    on_finish: function(data) {
-        subjectID = data.response.subjectID;
-        // Add subject ID to all future trials
-        jsPsych.data.addProperties({subjectID: subjectID});
-    }
-};
-
 // Welcome screen
 const welcome = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `
-        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h1>Shape Rating Experiment</h1>
-            <p>Welcome to the experiment!</p>
-            <p>You will be asked to enter your Subject ID first, then you'll see pairs of images:</p>
-            <ul style="text-align: left; display: inline-block;">
-                <li>One <strong>source image</strong> (original shape)</li>
-                <li>One <strong>model-generated image</strong> (AI-generated shape)</li>
-            </ul>
-            <p>Your task is to rate how well the AI model followed the task using a slider from 1 to 100.</p>
-            <p><strong>1</strong> = Very poor performance<br>
-               <strong>100</strong> = Perfect performance</p>
-            <p>There are up to 600 trials in total. Take breaks as needed.</p>
-            <p>At the end, your data will be automatically saved as a text file.</p>
-            <p><strong>Press any key to continue</strong></p>
-        </div>
-    `,
+    stimulus: function() {
+        // Generate subject ID automatically when the experiment starts
+        subjectID = generateSubjectID();
+        // Add subject ID to all future trials
+        jsPsych.data.addProperties({subjectID: subjectID});
+        
+        return `
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h1>Shape Rating Experiment</h1>
+                <p>Welcome to the experiment!</p>
+                <div style="background: #e8f4fd; border: 2px solid #007acc; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                    <p style="margin: 0; font-size: 18px;"><strong>Your Subject ID: ${subjectID}</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">This ID will be used for your data file</p>
+                </div>
+                <p>You will see pairs of images:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>One <strong>source image</strong> (original shape)</li>
+                    <li>One <strong>model-generated image</strong> (AI-generated shape)</li>
+                </ul>
+                <p>Your task is to rate how well the AI model followed the task using a slider from 1 to 100.</p>
+                <p><strong>1</strong> = Very poor performance<br>
+                   <strong>100</strong> = Perfect performance</p>
+                <p>There are up to 600 trials in total. Take breaks as needed.</p>
+                <p>At the end, your data will be automatically saved as a text file.</p>
+                <p><strong>Press any key to continue</strong></p>
+            </div>
+        `;
+    },
     choices: "ALL_KEYS"
 };
 
@@ -756,13 +769,52 @@ const welcome = {
 const instructions = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: INSTRUCTIONS_CONTENT + `
-        <p><strong>Press any key to see some examples</strong></p>
+        <p><strong>Press any key to continue</strong></p>
     `,
     choices: "ALL_KEYS",
     on_start: function() {
         // Add the persistent instructions button when the experiment starts
         addInstructionsButton();
     }
+};
+
+// Data submission instructions
+const dataSubmissionInstructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h2>Important: Data Submission Instructions</h2>
+            
+            <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 10px;">
+                <h3 style="color: #856404; margin-top: 0;">📁 Automatic Data Download</h3>
+                <p style="font-size: 16px; margin-bottom: 15px;">After you complete all trials, your data will be <strong>automatically downloaded</strong> to your computer as a text file.</p>
+                <p style="font-size: 16px; margin: 0;">The file will be named: <strong>[YourSubjectID]_experiment_data.txt</strong></p>
+            </div>
+            
+            <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin: 20px 0; border-radius: 10px;">
+                <h3 style="color: #0c5460; margin-top: 0;">📧 Email Submission Required</h3>
+                <p style="font-size: 16px; margin-bottom: 15px;">To receive your participation credits, you must email the downloaded data file to:</p>
+                <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Shapecompletion@gmail.com</p>
+                
+                <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                    <p style="margin: 0; font-size: 16px;"><strong>Please include in your email:</strong></p>
+                    <ul style="text-align: left; display: inline-block; margin: 10px 0;">
+                        <li>Your <strong>full name</strong></li>
+                        <li>Your <strong>student ID number</strong></li>
+                        <li>The <strong>data file</strong> as an attachment</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="background: #f8d7da; border: 2px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 10px;">
+                <h3 style="color: #721c24; margin-top: 0;">⚠️ Important</h3>
+                <p style="font-size: 16px; margin: 0;"><strong>Credits will only be awarded after we receive your data file via email.</strong> Simply completing the experiment is not sufficient.</p>
+            </div>
+            
+            <p style="font-size: 18px; margin-top: 30px;"><strong>Press any key to see examples and begin the experiment</strong></p>
+        </div>
+    `,
+    choices: "ALL_KEYS"
 };
 
 // Examples screen - Page 1
@@ -936,12 +988,11 @@ function runExperiment() {
     // Create timeline
     const timeline = [
         welcome,
-        subjectIDCollection,
         instructions,
+        dataSubmissionInstructions,
         preload,  
         examples1,
         examples2,
-
         ...trialsWithBreaks,
         debrief
     ];
