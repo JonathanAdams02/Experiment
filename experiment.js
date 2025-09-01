@@ -713,7 +713,7 @@ const jsPsych = initJsPsych({
                 <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin: 20px 0; border-radius: 10px;">
                     <h3 style="color: #0c5460; margin-top: 0;">📧 Next Step: Email Your Data</h3>
                     <p style="font-size: 16px; margin-bottom: 15px;">To receive your participation credits, please email the downloaded file to:</p>
-                    <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Shapecompletion@gmail.com</p>
+                    <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Adams@essb.eur.nl</p>
                     
                     <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
                         <p style="margin: 0; font-size: 16px;"><strong>Include in your email:</strong></p>
@@ -794,7 +794,7 @@ const dataSubmissionInstructions = {
             <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin: 20px 0; border-radius: 10px;">
                 <h3 style="color: #0c5460; margin-top: 0;">📧 Email Submission Required</h3>
                 <p style="font-size: 16px; margin-bottom: 15px;">To receive your participation credits, you must email the downloaded data file to:</p>
-                <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Shapecompletion@gmail.com</p>
+                <p style="font-size: 20px; font-weight: bold; color: #0c5460; margin: 15px 0;">Adams@essb.eur.nl </p>
                 
                 <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
                     <p style="margin: 0; font-size: 16px;"><strong>Please include in your email:</strong></p>
