@@ -720,6 +720,8 @@ const jsPsych = initJsPsych({
                         <ul style="text-align: left; display: inline-block; margin: 10px 0;">
                             <li>Your full name</li>
                             <li>Your student ID number</li>
+                            <li>Your age</li>
+                            <li>Your gender</li>
                             <li>The data file: <strong>${subjectID}_experiment_data.txt</strong></li>
                         </ul>
                     </div>
@@ -801,6 +803,8 @@ const dataSubmissionInstructions = {
                     <ul style="text-align: left; display: inline-block; margin: 10px 0;">
                         <li>Your <strong>full name</strong></li>
                         <li>Your <strong>student ID number</strong></li>
+                        <li>Your <strong>age</strong></li>
+                        <li>Your <strong>gender</strong></li>
                         <li>The <strong>data file</strong> as an attachment</li>
                     </ul>
                 </div>
